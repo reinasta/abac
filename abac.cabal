@@ -1,0 +1,196 @@
+name:                abac
+version:             0.0.1.0
+synopsis:            text queries for markdown authors
+description:
+    Abac is a text querying library targeting markdown documents. It aims
+    to serve as a writing assistant (prose linter) or style analysis tool. The library
+    is accompanied by a command line interface to showcase its key features.
+    .
+    Abac can search within the structural parts of markdown documents. It
+    can tell you, first, how many words there are in parts of a text such as title,
+    abstract, footnotes, sentences, paragraphs, comments, sections etc. Second,
+    Abac distinguishes between words according to their character-constituency as
+    well as their grammatical category, and can search for (and count and caluculate
+    percentages of) the prepositions, passive verbs, connectives, determiners, abstract
+    nouns etc. in most of the previously mentioned text divisions. Third, Abac tracks
+    the styling of words so it can search for (count etc.) the words in italics or bold.
+
+
+homepage:            https://github.com/reinasta/abac#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Andrei Nasta
+maintainer:          reinasta@gmail.com
+copyright:           Copyright (C) 2017 Andrei Nasta
+category:            Text
+build-type:          Simple
+extra-source-files:  README.md
+                     -- some examples
+                     docs/examples/Citations.hs
+                     docs/examples/Counter.hs
+                     docs/examples/Emphasis.hs
+                     docs/examples/Paragraphs.hs
+                     docs/examples/Passives.hs
+                     docs/examples/Prepositions.hs
+                     docs/examples/Sentences.hs
+                     -- text files used in examples
+                     docs/examples/flatland.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Abac
+                     , Abac.Builder
+                     , Abac.Cli
+                     , Abac.Cli.Command
+                     , Abac.Cli.UtilsCli
+                     , Abac.Internal
+                     , Abac.Options
+                     , Abac.Parser
+                     , Abac.Parser.Blocks   
+                     , Abac.Parser.Document 
+                     , Abac.Parser.Examples 
+                     , Abac.Parser.Inlines  
+                     , Abac.Parser.Internal  
+                     , Abac.Parser.Markers  
+                     , Abac.Parser.ParaParts
+                     , Abac.Parser.POS      
+                     , Abac.Parser.Sections 
+                     , Abac.Parser.Tech    
+                     , Abac.Parser.Operations    
+                     , Abac.Parser.Yaml     
+                     , Abac.PartsOfSpeech
+                     , Abac.PartsOfSpeech.Counters
+                     , Abac.PartsOfSpeech.Sentences
+                     , Abac.PrettyResults
+                     , Abac.Traverse
+                     , Abac.Traverse.Internal
+                     , Abac.Traverse.Predicates
+                     , Abac.Tutorials
+                     , Abac.Tutorials.Make
+                     , Abac.Tutorials.Search
+                     , Abac.Tutorials.Texts
+                     , Abac.Tutorials.Counter
+                     , Abac.Types
+                     , Abac.Types.AbacType
+                     , Abac.Types.Options
+                     , Abac.Types.ParserTypes
+                     , Abac.Types.Results
+  build-depends:       base >= 4.7 && < 5
+                     , lifted-base
+                     , text
+                     , containers
+                     , megaparsec >= 6.1 && < 7.0
+                     , chatter
+                     , either
+                     , data-default
+                     , filepath
+                     , optparse-applicative
+                     , errors
+                     , mtl
+                     , time
+                     , universe-base
+                     , deepseq
+                     , pretty
+                     , prettyprinter
+                     , transformers
+  default-language:    Haskell2010
+  ghc-options:         -Wall -fno-warn-unused-do-bind
+  other-extensions:    Rank2Types
+                     , ViewPatterns
+
+
+executable abac-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , abac
+  default-language:    Haskell2010
+
+test-suite abac-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , abac
+                     , chatter
+                     , containers
+                     , errors
+                     , either
+                     , text
+                     , hspec
+                     , QuickCheck
+                     , megaparsec >= 6.1 && < 7.0
+                     , hspec-megaparsec >= 1.0
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+  other-modules:       Abac.Parser.BlocksSpec
+                     , Abac.Parser.DocumentSpec
+                     , Abac.Parser.ExamplesSpec
+                     , Abac.Parser.InlinesSpec
+                     , Abac.Parser.InternalSpec
+                     , Abac.Parser.MarkersSpec
+                     , Abac.Parser.POSSpec
+                     , Abac.Parser.ParaPartsSpec
+                     , Abac.Parser.SectionsSpec
+                     , Abac.Parser.TechSpec
+                     , Abac.Parser.OperationsSpec
+                     , Abac.Parser.YamlSpec
+                     , Abac.ParserSpec
+                     , Abac.PartsOfSpeechSpec
+                     , Abac.Traverse.AttributesSpec
+                     , Abac.Traverse.BlocksSpec
+                     , Abac.Traverse.CountSpec
+                     , Abac.Traverse.ExamplesSpec
+                     , Abac.Traverse.ExpressionsSpec
+                     , Abac.Traverse.InlinesSpec
+                     , Abac.Traverse.InternalSpec
+                     , Abac.Traverse.MetaSpec
+                     , Abac.Traverse.NgramsSpec
+                     , Abac.Traverse.ParaPartsSpec
+                     , Abac.Traverse.PositionSpec
+                     , Abac.Traverse.PredicatesSpec
+                     , Abac.Traverse.QuantifySpec
+                     , Abac.Traverse.SearchableSpec
+                     , Abac.Traverse.SectionsSpec
+                     , Abac.Traverse.SelectSpec
+                     , Abac.Traverse.StylingSpec
+                     , Abac.Traverse.TagsSpec
+                     , Abac.Traverse.TextifySpec
+                     , Abac.Traverse.WordsSpec
+                     , Abac.TraverseSpec
+                     , Abac.Tutorials.MakeSpec
+                     , Abac.Tutorials.SearchSpec
+                     , Abac.TutorialsSpec
+                     , Abac.Cli.CommandSpec
+                     , Abac.Cli.UtilsCliSpec
+                     , Abac.PrettyResultsSpec
+                     , Abac.InternalSpec
+                     , AbacSpec
+
+benchmark benchmark-abac
+  default-language:  Haskell2010
+  type:              exitcode-stdio-1.0
+  hs-source-dirs:    src, bench
+  main-is:           AbacBench.hs
+  build-depends:     base
+                   , abac
+                   , text
+                   , megaparsec
+                   , containers
+                   , chatter
+                   , optparse-applicative
+                   , data-default
+                   , deepseq
+                   , errors
+                   , either
+                   , criterion
+  other-modules:     Abac.Command
+                   , Abac.Internal
+                   , Abac.Parser
+                   , Abac.ParserTypes
+  
+source-repository head
+  type:     git
+  location: https://github.com/reinasta/abac
