@@ -78,8 +78,11 @@ given separately.
 
 Let's give ourselves a text to work with. Save the following text in `test.txt`:
 
-$ cat > test.txt
+```shell
+cat > test.txt
 In all the higher forms this process cannot be kept up indefinitely. After a while they succumb; they die. The creature is not equal to the task of indefinite self-renewal. But continuity of the life process is not dependent upon the prolongation of the existence of any one individual. Reproduction of other forms of life goes on in continuous sequence. And though, as the geological record shows, not merely individuals but also species die out, the life process continues in increasingly complex forms. As some species die out, forms better adapted to utilize the obstacles against which they struggled in vain come into being. Continuity of life means continual readaptation of the environment to the needs of living organisms. (John Dewey, Democracy and Education) 
+```
+
 
 Finish with Ctrl-D to save the file and to bring the terminal prompt back.
 
@@ -89,7 +92,7 @@ Download the abac executable (called simply `abac`) in the same folder as `text.
 
 The simplest thing Abac can do is give you the word count for the entire text:
 
-$ `abac -f test.txt --anyword --whole`
+`abac -f test.txt --anyword --whole`
 
 > Note: if the previous command returns 'command not found' (even if the abac
 > executable is in the current directory) you might need the `./` prefix to the 
@@ -100,7 +103,7 @@ $ `abac -f test.txt --anyword --whole`
 If you want the word count at a certain paragraph, add the `-p` parameter
 to the previous command, as I do below:
 
-$ `abac -f test.txt --anyword --whole -p 1`
+`abac -f test.txt --anyword --whole -p 1`
 
 Abac will respond with the number of words used in paragraph 1. (The text in file `test.txt`
 has just one paragraph so if you ask anything about any other paragraph you'll get an error.)
@@ -109,7 +112,7 @@ To search for a specific kind of word rather than any word, replace the '--anywo
 one corresponding to one of the word categories that Abac recognizes. For instance, if you need
 a list of the prepositions occurring in `test.txt` do
 
-$ `abac -f test.txt --preposition`
+`abac -f test.txt --preposition`
 
 Note: each preposition in the list will be prefixed with the line and column number corresponding
 to its position in the document. For instance, the preposition "in" occurs at the
@@ -119,7 +122,7 @@ displays the results you can opt for the native representation using the '--nati
 If instead you want the preposition count just add `-#` (or `--whole`) to the previous command,
 to get the new commad:
 
-$ `abac test.txt --preposition -#`
+`abac test.txt --preposition -#`
 
 The output will be the number of prepositions in the text (namely, 18). As before,
 this command can be further specified with the paragraph number to get the preposition
@@ -128,7 +131,7 @@ count at that paragraph.
 But paragraph numbers are usually difficult to track. If you use a text editor,
 you have easy access to line numbers. Abac can count at line numbers too. Just do
 
-$ `abac test.txt --preposition -# -l 1`
+`abac test.txt --preposition -# -l 1`
 
 which produces the preposition count at line 1.
 
@@ -136,11 +139,11 @@ Now suppose that you are not particularly interested in individual words but in
 groups of n adjacent words, where n is a positive integer. These groups are
 called 'ngrams'. See if you can guess what the following is doing:
 
-$ `abac text.txt --ngram 3 --whole`
+`abac text.txt --ngram 3 --whole`
 
 What about the following?
 
-$ `abac text.txt --ngram 7 -l 1`
+`abac text.txt --ngram 7 -l 1`
 
 The previous two commands are (respectively) counting expressions of 3 words in
 the whole `test.txt` document and listing the expressions of 7 words at line 1.
@@ -159,45 +162,46 @@ discussed more at length.
 Let's give ourselves another text to work with to show off styling-based searches.
 At the terminal prompt type:
 
-$ cat > style_test.md
+```shell 
+cat > style_test.md
 **Sed ut perspiciatis *unde* omnis iste natus error sit** voluptatem
 accusantium doloremque laudantium, totam (rem *aperiam*), 
 [eaque ipsa quae ab illo **inventore veritatis** et quasi architecto 
 beatae vitae dicta sunt explicabo]. 
-
+```
 On the first line there is one italicized word. We can find it with the following
 command:
 
-$ `abac -f style_test.md --italic -l 1`
+`abac -f style_test.md --italic -l 1`
 
 To search for words in bold on the first line, we do
 
-$ `abac -f style_test.md --bold -l 1`
+`abac -f style_test.md --bold -l 1`
 
 To search for words in italic and bold, we use
 
-$ `abac -f style_test.md --italic --bold -l 1`
+`abac -f style_test.md --italic --bold -l 1`
 
 To find the words enclosed in parenthesis on line two, we run
 
-$ `abac -f style_test.md --paren -l 2`
+`abac -f style_test.md --paren -l 2`
 
 The italic words enclosed in parentheses can be obtained by running
 
-$ `abac -f style_test.md --italic --paren -l 2`
+`abac -f style_test.md --italic --paren -l 2`
 
 In a similar fashion we identify the words in bold in the first paragraph:
 
-$ `abac -f style_test.md --bold -p 1`
+`abac -f style_test.md --bold -p 1`
 
 To find out the number of bolded words in the first paragraph we add the `--whole`
 flag to the previous command to get:
 
-$ `abac -f style_test.md --bold -p 1 --whole`
+`abac -f style_test.md --bold -p 1 --whole`
 
 To find all the words that appear in bold and italic we run:
 
-$ `abac -f style_test.md --bold --italic -p 1`
+`abac -f style_test.md --bold --italic -p 1`
 
 > Note: Abac is not always working as expected when given multiple
 > styling and formatting flags
@@ -369,6 +373,7 @@ In the next couple of months, I'll be focusing on the paths leading on to
 - completing the test suite for the Abac parser (Spec modules)
 - improving the POS tagging layer (Parser and ParserTypes modules)
 - adding a writer for Abac's abstract syntax tree
+- writing a better result type for Abac's output
 
 
 # Similar software
@@ -379,11 +384,11 @@ thread is that these projects can serve as writing assistants or text-analysis t
 
 - [hemingway](http://www.hemingwayapp.com/): writing assistant, free to use online, but proprietary.
 
-- [newspaper](https://github.com/codelucas/newspaper/): excellent library for querying web pages
+- [newspaper](https://github.com/codelucas/newspaper/): nice library for querying web pages
 
 - [pandoc](http://pandoc.org/) excellent command-line utility and library aimed at converting text between different formats (e.g. docx and tex); the library can be used to query markdown documents (e.g. list the links in the document)
 
-- [proselint](https://github.com/amperser/proselint) excellent project, many features, it offers warnings about misuse of punctuation, words and phrases.
+- [proselint](https://github.com/amperser/proselint): very interesting and comprehensive project; it offers warnings about misuse of punctuation, words and phrases.
 
 - [writer's diet](http://writersdiet.com/test.php): free to use online for texts of no more than 1000 words; interesting features but more of a toy app and limited UI
 

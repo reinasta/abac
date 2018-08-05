@@ -1,5 +1,5 @@
 name:                abac
-version:             0.0.1.0
+version:             0.0.1
 synopsis:            text queries for markdown authors
 description:
     Abac is a text querying library targeting markdown documents. It aims
