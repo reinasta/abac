@@ -342,7 +342,8 @@ in other words matching punctuation cannot cross sentence boundaries while prese
 a correct parse of sentences. A corollary:
   + inner sentence quotations must precede the full stop "like so". Not "like so." The
 latter will be parsed but probably not as intended ("like so." will be considered a full
-sentence rather than just a part of sentence).
+sentence rather than just a part of sentence)
+- inner word styling (e.g. \*un\*cool) is not parsed correctly.
 
 I expect to fix these sooner or later.
 
