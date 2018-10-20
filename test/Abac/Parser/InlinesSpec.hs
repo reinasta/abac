@@ -278,6 +278,15 @@ spec = do
       parseRes <- fmap (length . bold) <$> pemph5
       parseRes `shouldBe` Right (6 :: Int)
 
+    it "Inner word italics are not accepted" $ do
+      parseRes <- fmap null <$> pemph6
+      parseRes `shouldBe` Right (True :: Bool)
+
+    it "Inner word bold chars are not accepted" $ do
+      parseRes <- fmap null <$> pemph7
+      parseRes `shouldBe` Right (True :: Bool)
+
+
 
   describe "Matching punctuation:" $ do
     let --manyHave :: Int -> [Attr] -> Either (ParseError Char Void) [Inline] -> Bool;
@@ -529,7 +538,9 @@ pemph4 = runParserT styledInlines "" emph4
 pemph5 = runParserT styledInlines "" emph5
 
 
-
+-- inner-word styling: these should fail
+pemph6 = runParserT styledInlines "" "*re*apply"
+pemph7 = runParserT styledInlines "" "**re**apply"
 
 
 
