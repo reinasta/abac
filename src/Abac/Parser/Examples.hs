@@ -3,7 +3,7 @@ module Abac.Parser.Examples where
 
 import Prelude hiding (Word,pred)
 
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import Text.Megaparsec hiding (State)
 
 import Abac.Types.ParserTypes

@@ -12,7 +12,7 @@ import Abac.Parser.POS (documentWithTags)
 -- This module contains a couple of texts that I'm using in the tutorials
 -- (see the other files in this directory)
 
-pdoc5_tag :: IO (Either (ParseError Char Void) Document)
+pdoc5_tag :: IO (Either (ParseErrorBundle String Void) Document)
 pdoc5_tag = runParserT documentWithTags "" (withoutAbbreviations' doc5)
 
 doc5 :: String
@@ -24,7 +24,7 @@ pdoc5_res = Doc [Meta (M.fromList [(AuthorKey,MetaInlines [Word [Tag "NN",None] 
 
 
 
-pdoc4_tag :: IO (Either (ParseError Char Void) Document)
+pdoc4_tag :: IO (Either (ParseErrorBundle String Void) Document)
 pdoc4_tag = runParserT documentWithTags "" doc4
 
 doc4 :: String
@@ -33,7 +33,7 @@ doc4 ="---\ntitle: Corporate ipsum\nauthor: Bot\nnote: from a website\n---\n\n# 
 pdoc4_res :: a
 pdoc4_res = undefined -- fails
 
-pdoc3_tag :: IO (Either (ParseError Char Void) Document)
+pdoc3_tag :: IO (Either (ParseErrorBundle String Void) Document)
 pdoc3_tag = runParserT documentWithTags "" doc3
 
 doc3 :: String
@@ -62,7 +62,7 @@ pdoc3_res = Doc [Meta (M.fromList [(AuthorKey,MetaInlines [Word [Tag "NNP",None]
 
 
 
-pdoc2_tag :: IO (Either (ParseError Char Void) Document)
+pdoc2_tag :: IO (Either (ParseErrorBundle String Void) Document)
 pdoc2_tag = runParserT documentWithTags "" doc2
 
 doc2 :: String

@@ -4,7 +4,7 @@ import Data.Char hiding (Space)
 import qualified Data.Text as T
 import Data.Functor (($>))
 import Data.Monoid ((<>))
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import Data.Maybe (fromMaybe)
 import Text.Megaparsec
 import Text.Megaparsec.Char
@@ -34,7 +34,7 @@ emptyMatching :: Parser String -> Parser String -> Attr -> Parser Inline
 emptyMatching opn cls attr = do
   opn
   cls
-  pos <- posFromSource 1 <$> getPosition
+  pos <- posFromSource 1 <$> getSourcePos
   return $ Word [attr] pos T.empty
 
 emptyParens :: Parser Inline
@@ -735,7 +735,7 @@ newlnStrict = notFollowedBy someMarker *> newln <* notFollowedBy anotherNewline
 num :: Parser Number
 num = do
   numStr <- (try numWithPunct <|> numWoPunct) <* notFollowedBy apostr -- "90's" is a word, not a num
-  pos <- posFromSource (length numStr) <$> getPosition
+  pos <- posFromSource (length numStr) <$> getSourcePos
   return $ Number [None] pos (read numStr)
   where
     numWithPunct = (many numberChar <+ numericPunct) <> numWoPunct
@@ -751,7 +751,7 @@ num = do
 word :: Parser Word
 word = do
   wordStr <- (try wordWithDashes <|> try alphaNumWord)
-  pos <- posFromSource (length wordStr) <$> getPosition
+  pos <- posFromSource (length wordStr) <$> getSourcePos
   return $ Word [None] pos (T.pack wordStr)
   <?> "word"
   where
@@ -770,7 +770,7 @@ wordWithApostrophe :: Parser Word
 wordWithApostrophe = do
   wordStr' <- (try wordWithDashes <|> try alphaNumWord)
   wordStr <- addAnyFinalQuoteTo wordStr'
-  pos <- posFromSource (length wordStr) <$> getPosition
+  pos <- posFromSource (length wordStr) <$> getSourcePos
   return $ Word [None] pos (T.pack wordStr)
   <?> "word"
   where
@@ -805,7 +805,7 @@ wordWithApostrophe = do
 wordSansApostrophe :: Parser Word
 wordSansApostrophe = do
   wordStr <- (try wordWithDashes <|> try alphaNumWord)
-  pos <- posFromSource (length wordStr) <$> getPosition
+  pos <- posFromSource (length wordStr) <$> getSourcePos
   return $ Word [None] pos (T.pack wordStr)
   <?> "word"
   where
@@ -828,7 +828,7 @@ wordSansApostrophe = do
 citation :: Parser Citation
 citation = do
   citStr <- (notFollowedBy alphaNumChar *> string "@" *> referenceKey <* optionalRefInfo)
-  pos <- posFromSource (length citStr) <$> getPosition
+  pos <- posFromSource (length citStr) <$> getSourcePos
   return $ Citation [None] 0 pos (T.pack citStr)
   <?> "citation"
   where
@@ -847,7 +847,7 @@ citation = do
 email :: Parser Email
 email = do
   name <- some $ alphaNumChar <|> char '_' <|> char '.'
-  pos <- posFromSource (length name) <$> getPosition
+  pos <- posFromSource (length name) <$> getSourcePos
   char '@'
   domain <- (some alphaNumChar <+ char '.') <> some letterChar
   return $ Email [None] pos (T.pack name) (T.pack domain)
@@ -873,7 +873,7 @@ url :: Parser Text
 url = fmap T.pack $ prefix <> rest
   where
     prefix = try (string "http") <|> try (string "www") <|> string "/"
-    rest = manyTill anyChar (char ' ' $> () <|> lookAhead closePrn $> () <|> eof)
+    rest = manyTill anySingle (char ' ' $> () <|> lookAhead closePrn $> () <|> eof)
 
 
 
@@ -886,7 +886,7 @@ linkrefWith end = do
   id <- idp <* lexeme (char ':')
   url' <- url
   -- 3 = the char-length of two brackets plus the colon (parsed by the id parser)
-  pos <- posFromSource (T.length id + T.length url' + 3) <$> getPosition
+  pos <- posFromSource (T.length id + T.length url' + 3) <$> getSourcePos
   optTitle <* end
   return $ LinkRef id pos url'
 
@@ -915,7 +915,7 @@ imagerefWith end = do
   ws3x
   id <- idp <* lexeme (char ':')
   pth <- path <* optWs <* optTitle <* end
-  pos <- posFromSource (T.length pth + T.length id + 3) <$> getPosition
+  pos <- posFromSource (T.length pth + T.length id + 3) <$> getSourcePos
   return $ ImageRef id pos pth
 
 

@@ -3,7 +3,7 @@ module Abac.Parser.Blocks where
 import qualified Data.Text as T
 
 import Data.Monoid ((<>))
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import Data.Functor (($>))
 
 import Text.Megaparsec
@@ -150,7 +150,7 @@ blocktech' = try blockmath' <|> blockcode' <?> "blocktech'"
 blockmath' :: Parser Block
 blockmath' = do
   mathStr <- try bracketBlock <|> ddollarBlock <?> "blockmath'"
-  pos <- posFromSource (length mathStr) <$> getPosition
+  pos <- posFromSource (length mathStr) <$> getSourcePos
   return $ BlockTech Math pos (T.pack mathStr)
   where
     bracketBlock = space *> mathString openMathBlock closeMathBlock
@@ -160,7 +160,7 @@ blockmath' = do
 blockcode' :: Parser Block
 blockcode' = do
   codeStr <- try tildeBlock <|> backtickBlock
-  pos <- posFromSource (length codeStr) <$> getPosition
+  pos <- posFromSource (length codeStr) <$> getSourcePos
   return $ BlockTech Code (fst pos - 1, 0) (T.pack codeStr)
   <?> "blockcode'"
   where

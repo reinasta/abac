@@ -1,7 +1,7 @@
 module Abac.Parser.Sections where
 
 import Data.Monoid ((<>))
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import Text.Megaparsec
 
 import Abac.Types.ParserTypes

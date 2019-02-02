@@ -5,7 +5,7 @@ import qualified Data.Text as T
 import Prelude hiding (Word,seq)
 
 import Data.Functor (($>))
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import qualified Data.Map.Strict as M
 
 import Text.Megaparsec

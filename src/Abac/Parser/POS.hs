@@ -3,7 +3,7 @@ module Abac.Parser.POS where
 
 import qualified Data.Text as T
 
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import qualified Data.Map.Strict as M
 import Control.Monad.Trans (liftIO)
 
@@ -288,7 +288,7 @@ inlineTagPair = do
 citationWithTag :: Parser Inline
 citationWithTag = do
   char '@'
-  pos <- posFromSource 1 <$> getPosition
+  pos <- posFromSource 1 <$> getSourcePos
   nlpTag
   char ' '
   citKey <- some citKeyChar
@@ -300,7 +300,7 @@ citationWithTag = do
 citationTagPair :: Parser (Inline,Tag)
 citationTagPair = do
   char '@'
-  pos <- posFromSource 1 <$> getPosition
+  pos <- posFromSource 1 <$> getSourcePos
   nlpTag
   char ' '
   citKey <- some citKeyChar

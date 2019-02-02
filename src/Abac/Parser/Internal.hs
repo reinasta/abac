@@ -3,7 +3,7 @@ module Abac.Parser.Internal where
 
 import Data.Char hiding (Space)
 import qualified Data.Text as T
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many,some)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L

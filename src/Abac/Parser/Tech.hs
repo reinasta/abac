@@ -2,7 +2,7 @@ module Abac.Parser.Tech where
 
 
 import Data.Monoid ((<>))
-import Control.Applicative hiding ((<|>))
+import Control.Applicative hiding ((<|>),many)
 import Data.Char hiding (Space)
 import qualified Data.Text as T
 import Text.Megaparsec
@@ -25,7 +25,7 @@ techInline = try mathInline <|> codeInline
 codeInline :: Parser Inline -- Inline Code Text
 codeInline = do
   codeStr <- between (char '`') (char '`') (many $ noneOf ['`'])
-  pos <- posFromSource (length codeStr) <$> getPosition
+  pos <- posFromSource (length codeStr) <$> getSourcePos
   return $ InlineTech Code pos (T.pack codeStr)
   <?> "inline code"
 
@@ -33,7 +33,7 @@ codeInline = do
 mathInline :: Parser Inline
 mathInline = do
   mathstr <- try dollarMath <|> parensMath
-  pos <- posFromSource (length mathstr) <$> getPosition
+  pos <- posFromSource (length mathstr) <$> getSourcePos
   return $ InlineTech Math pos (T.pack mathstr)
   <?> "inline math"
   where
@@ -47,8 +47,8 @@ mathString opn cls = lexeme opn *> mathtail cls
     mathtail, nonend, end, till :: Parser String -> Parser String
     mathtail str = concat <$> many (try (nonend str) <|> try (end str))
     nonend str = try (till mbox) <|> till (esc <> str)
-    end str = manyTill anyChar str
-    till str = manyTill anyChar (lookAhead str) <> str
+    end str = manyTill anySingle str
+    till str = manyTill anySingle (lookAhead str) <> str
     mbox :: Parser String
     mbox = mathTextMacroMarker <> symbl "{" <> (many $ noneOf ['}']) <> symbl "}"
 
