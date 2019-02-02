@@ -106,7 +106,7 @@ itm6 = runParserT itmrk "" "\n* "
 itm7 = runParserT itmrk "" "\n  - "
 itm8 = runParserT itmrk "" "\n   - "
 
-mrk1 :: IO (Either (ParseError Char Void) Marker)
+mrk1 :: IO (Either (ParseErrorBundle String Void) Marker)
 mrk1 = runParserT marker "" "\n  a. "
 mrk2 = runParserT marker "" "\nb) "
 mrk3 = runParserT marker "" "\nc."

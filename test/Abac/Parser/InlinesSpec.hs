@@ -289,19 +289,19 @@ spec = do
 
 
   describe "Matching punctuation:" $ do
-    let --manyHave :: Int -> [Attr] -> Either (ParseError Char Void) [Inline] -> Bool;
+    let --manyHave :: Int -> [Attr] -> Either (ParseErrorBundle String Void) [Inline] -> Bool;
         manyHave n attrs einls =
           let Right inls = einls
               words = filter wordlike inls
               targets = traverseWith (`hasAttrs` attrs) (Inlines words)
           in  length targets == n
-    let --manyHaveExactly :: Int -> [Attr] -> Either (ParseError Char Void) [Inline] -> Bool;
+    let --manyHaveExactly :: Int -> [Attr] -> Either (ParseErrorBundle String Void) [Inline] -> Bool;
         manyHaveExactly n attrs einls =
           let Right inls = einls
               words = filter wordlike inls
               targets = traverseWith (`hasExactlyAttrs` attrs) (Inlines words)
           in  length targets == n
-    let --manyHave :: Int -> [Attr] -> Either (ParseError Char Void) [Inline] -> Bool;
+    let --manyHave :: Int -> [Attr] -> Either (ParseErrorBundle String Void) [Inline] -> Bool;
         sentHas n attrs einls =
           let Right (Sentence inls) = einls
               words = filter wordlike inls
@@ -353,7 +353,7 @@ spec = do
 
     -- emphasis
     it "Thirteen words in italics; two of them are bracketed" $ do
-      let italBrackProp :: Either (ParseError Char Void) [Inline] -> Bool;
+      let italBrackProp :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
           italBrackProp einls = manyHave 13 [Emph] einls && manyHave 2 [Emph, Bracketed] einls
       pemphs1 >>= (`shouldSatisfy` italBrackProp)
 
@@ -389,7 +389,7 @@ spec = do
       pquote6 >>= (`shouldSatisfy` manyHave 6 [Quoted])
 
     it "One bracketed, single-quoted word; seven single-quoted ones; two bracketed" $ do
-      let quoteBrackProp :: Either (ParseError Char Void) [Inline] -> Bool;
+      let quoteBrackProp :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
           quoteBrackProp einls =
             manyHave 7 [Quoted] einls
             && manyHave 1 [Quoted, Bracketed] einls
@@ -397,7 +397,7 @@ spec = do
       pquote7 >>= (`shouldSatisfy` quoteBrackProp)
 
     it "Seven single-quoted words; one single-quoted, bracketed word; two bracketed" $ do
-      let quoteEmphProp :: Either (ParseError Char Void) [Inline] -> Bool;
+      let quoteEmphProp :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
           quoteEmphProp einls =
             manyHave 7 [Quoted] einls
             && manyHave 1 [Quoted, Bracketed] einls
@@ -405,7 +405,7 @@ spec = do
       pquote8 >>= (`shouldSatisfy` quoteEmphProp)
 
     it "Seven single-quoted words; one single-quoted, bracketed and italic; two bracketed and parenthetical" $ do
-      let quoteEtcProp :: Either (ParseError Char Void) [Inline] -> Bool;
+      let quoteEtcProp :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
           quoteEtcProp einls =
             manyHave 7 [Quoted] einls
             && manyHave 1 [Quoted, Bracketed,Emph] einls
@@ -607,7 +607,7 @@ brackDoubleEmph3 = "[word1 *emph1 \"emph-quote\" emph2* word2] [with \"*no* brac
 styledinls1 = runParserT decoratedInlines "" "**bold characters**]"
 inlines_empty = runParserT decoratedInlines "" ""
 
-inlines_almost_empty1, inlines_almost_empty2 :: IO (Either (ParseError Char Void) [Inline])
+inlines_almost_empty1, inlines_almost_empty2 :: IO (Either (ParseErrorBundle String Void) [Inline])
 inlines_almost_empty1 = runParserT decoratedInlines "" "\" \""
 inlines_almost_empty2 = runParserT decoratedInlines "" "\"\" blah"
 

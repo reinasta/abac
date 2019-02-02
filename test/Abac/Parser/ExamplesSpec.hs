@@ -59,7 +59,7 @@ spec = do
       parseRes `shouldBe` Right True
 
     it "This is the marker of an (ordered) example item" $ do
-      parseRes <- pexso1_mrk :: IO (Either (ParseError Char Void) Marker)
+      parseRes <- pexso1_mrk :: IO (Either (ParseErrorBundle String Void) Marker)
       parseRes `shouldBe` Right (ExMark 0 zeros "2")
 
     it "This is the main (ordered) example item" $ do

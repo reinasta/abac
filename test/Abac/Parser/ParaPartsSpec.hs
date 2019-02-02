@@ -146,7 +146,7 @@ spec = do
               targets = traverseWith (`hasAttrs` attrs) (Inlines words)
           in  length targets == n
 
-        --sent1Prop :: Either (ParseError Char Void) [Inline] -> Bool;
+        --sent1Prop :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
         sent1Prop einls =
             sentHas 7 [Quoted] einls
             && sentHas 3 [Bracketed] einls
@@ -155,7 +155,7 @@ spec = do
       psentblnc1 >>= (`shouldSatisfy` sent1Prop)
 
     it "A sentence with fourteen double-quoted words, an italic, a bold one, three bracketed ones, and four parentheticals" $ do
-      let --sent2Prop :: Either (ParseError Char Void) [Inline] -> Bool;
+      let --sent2Prop :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
           sent2Prop einls =
             sentHas 14 [DoubleQuoted] einls
             && sentHas 1 [Emph] einls
@@ -165,7 +165,7 @@ spec = do
       psentblnc2 >>= (`shouldSatisfy` sent2Prop)
 
     it "A sentence with six italicized words, a bold-and-italic one, and five bracketed words" $ do
-      let --sent3Prop :: Either (ParseError Char Void) [Inline] -> Bool;
+      let --sent3Prop :: Either (ParseErrorBundle String Void) [Inline] -> Bool;
           sent3Prop einls =
             sentHas 6 [Emph] einls
             && sentHas 1 [Emph,Bold] einls
@@ -245,53 +245,53 @@ sentbrack11 = "he\n*may* fall in love with one"
 
 -- parsing
 
-psentbrack1 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack1 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack1 = runParserT decoratedParaParts "" sentbrack1
 
-psentbrack2 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack2 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack2 = runParserT decoratedParaParts "" sentbrack2
 
-psentbrack3 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack3 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack3 = runParserT decoratedParaParts "" sentbrack3
 
-psentbrack4 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack4 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack4 = runParserT decoratedParaParts "" sentbrack4
 
-psentbrack5 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack5 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack5 = runParserT decoratedParaParts "" sentbrack5
 
-psentbrack6 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack6 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack6 = runParserT decoratedParaParts "" sentbrack6
 
-psentbrack7 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack7 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack7 = runParserT decoratedParaParts "" sentbrack7
 
-psentbrack8 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack8 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack8 = runParserT decoratedParaParts "" sentbrack8
 
-psentbrack9 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack9 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack9 = runParserT decoratedParaParts "" sentbrack9
 
-psentbrack10 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack10 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack10 = runParserT decoratedParaParts "" sentbrack10
 
-psentbrack11 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentbrack11 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentbrack11 = runParserT decoratedParaParts "" sentbrack11
 
 
-pfootnote1 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+pfootnote1 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 pfootnote1 = runParserT (someParaPart *> some footnoteP) "" ftn1
 
-pfootnote2 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+pfootnote2 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 pfootnote2 = runParserT (some paraPart) "" ftn2
 
-pfootnote3 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+pfootnote3 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 pfootnote3 = runParserT (some paraPart) "" ftn3
 
-pfootnote4 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+pfootnote4 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 pfootnote4 = runParserT (some paraPart) "" ftn4
 
-pfootnote5 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+pfootnote5 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 pfootnote5 = runParserT (some paraPart) "" ftn5
 
 
@@ -310,7 +310,7 @@ sentquote1, sentquote2 :: String
 sentquote1 = "“But it is,” returned she; “for mrs Long has just been here, and she told me all about it.”\n\n"
 sentquote2 = "“How doth the little--”"
 
-psentquote1, psentquote2 :: IO (Either (ParseError (Token String) Void) [ParaPart])
+psentquote1, psentquote2 :: IO (Either (ParseErrorBundle String Void) [ParaPart])
 psentquote1 = runParserT decoratedParaParts "" sentquote1
 psentquote2 = runParserT decoratedParaParts "" sentquote2
 

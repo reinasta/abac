@@ -159,7 +159,7 @@ secmrk1 = "### Introduction\n\n\n\n"
 secmrk2 = "#### Next section (with a title) \n"
 secmrk3 = "# A section with a short title, blah. \n"
 
-psecmrk1, psecmrk2, psecmrk3 :: IO (Either (ParseError Char Void) Marker)
+psecmrk1, psecmrk2, psecmrk3 :: IO (Either (ParseErrorBundle String Void) Marker)
 psecmrk1 = runParserT sectionMarker "" secmrk1
 psecmrk2 = runParserT sectionMarker "" secmrk2
 psecmrk3 = runParserT sectionMarker "" secmrk3

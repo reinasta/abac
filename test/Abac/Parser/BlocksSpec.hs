@@ -254,10 +254,10 @@ pblc5 = runParserT (many block) "" blc5
 pblc5' = runParserT (many block) "" blc5'
 pblc51' = runParserT (many block) "" blc51' -- should fail
 
-pblc54 :: IO (Either (ParseError Char Void) Block)
+pblc54 :: IO (Either (ParseErrorBundle String Void) Block)
 pblc54 = runParserT block "" blc54
 
-pblc55 :: IO (Either (ParseError Char Void) Block)
+pblc55 :: IO (Either (ParseErrorBundle String Void) Block)
 pblc55 = runParserT block "" blc55
 
 
