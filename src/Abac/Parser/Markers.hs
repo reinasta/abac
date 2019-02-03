@@ -7,6 +7,7 @@ import Prelude hiding (Word)
 import Data.Functor (($>))
 import Text.Megaparsec
 import Text.Megaparsec.Char
+import Text.Megaparsec.Debug (dbg)
 
 import Abac.Types.ParserTypes
 import Abac.Parser.Operations
@@ -21,21 +22,24 @@ inlineMarker = fmap Other marker
 
 submrk :: Parser Marker
 submrk = do
-  mrk <- try itmrk <|> exmrk
+  try (dbg "newline" newline) <|> return undefined
+  mrk <- dbg "it/exmrk" (try itmrk <|> exmrk)
   check mrk
   where
     check :: Marker -> Parser Marker
-    check mrk' =
+    check mrk' = dbg "check" (
       if markerLevel mrk' < 1
          then fail "level 0 marker"
-         else return mrk'
+         else return mrk')
+
+markerNoNewline :: Parser Marker
+markerNoNewline = try itmrk <|> exmrk <?> "marker without a newline-prefix"
 
 marker :: Parser Marker
-marker = (try itmrk <|> exmrk <?> "marker")
+marker = newline *> (try itmrk <|> exmrk <?> "marker")
 
 exmrk :: Parser Marker
 exmrk = do
-  newline
   sps <- many (char ' ')
   (int, nom) <- try exMarker1 <|> exMarker2
   return $ ExMark (length sps `div` 2) int nom
@@ -78,7 +82,6 @@ exmrk = do
 
 itmrk :: Parser Marker
 itmrk = do
-  newline
   sps <- many (char ' ')
   notFollowedBy emphMarkerLeft
   chr' <- char '+' <|> char '-' <|> char '*'

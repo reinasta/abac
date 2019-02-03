@@ -65,13 +65,13 @@ spec = do
       exm8 >>= (`shouldSatisfy` isExMarker')
 
 
-    it "A marker for a sub-example (marker of level > 0)" $ do
+    it "First marker for a sub-example (marker of level > 0)" $ do
       psubmrk1 >>= (`shouldSatisfy` isRight)
 
-    it "A marker for a sub-example (marker of level > 0)" $ do
+    it "Second marker for a sub-example (marker of level > 0)" $ do
       psubmrk2 >>= (`shouldSatisfy` isRight)
 
-    it "A marker for a sub-example (marker of level > 0)" $ do
+    it "Third marker for a sub-example (marker of level > 0)" $ do
       psubmrk3 >>= (`shouldSatisfy` isRight)
 
     it "The sub-example marker parser should fail for level 0 markers" $ do
@@ -87,15 +87,15 @@ spec = do
 -- Marker parsers --
 --------------------
 
-exm1 = runParserT exmrk "" "\n  12345."
-exm2 = runParserT exmrk "" "\n    (12345) "
-exm3 = runParserT exmrk "" "\n12345) "
-exm4 = runParserT exmrk "" "\n      12345. "
-exm5 = runParserT exmrk "" "\n        12345)"
-exm6 = runParserT exmrk "" "\n(@ex1) "
-exm7 = runParserT exmrk "" "\n  (@ex2) "
-exm8 = runParserT exmrk "" "\n   (@ex3) "
-exm9 = runParserT exmrk "" "\n(@) "
+exm1 = runParserT exmrk "" "  12345."
+exm2 = runParserT exmrk "" "    (12345) "
+exm3 = runParserT exmrk "" "12345) "
+exm4 = runParserT exmrk "" "      12345. "
+exm5 = runParserT exmrk "" "        12345)"
+exm6 = runParserT exmrk "" "(@ex1) "
+exm7 = runParserT exmrk "" "  (@ex2) "
+exm8 = runParserT exmrk "" "   (@ex3) "
+exm9 = runParserT exmrk "" "(@) "
 
 itm1 = runParserT itmrk "" "\n  *"
 itm2 = runParserT itmrk "" "\n    + "

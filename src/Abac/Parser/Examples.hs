@@ -5,6 +5,7 @@ import Prelude hiding (Word,pred)
 
 import Control.Applicative hiding ((<|>),many,some)
 import Text.Megaparsec hiding (State)
+import Text.Megaparsec.Debug (dbg)
 
 import Abac.Types.ParserTypes
 import Abac.Internal (isOrdered,listToTup,tupToList)
@@ -93,19 +94,35 @@ flip0To n (int : ints)
   | otherwise = int : flip0To n ints
 
 
+exso1'' = "(@1) first item.\n(@2) second item.^[footnote.]\n(@3) third item.\n  a. fourth item."
+pexso1'' = runParserT examplesNoNewline "" exso1''
+
+psubmrk1' = runParserT submrk "" "\n  (@blah) "
+psubmrk3' = runParserT submrk "" "  5) "
+
 
 --BlockEx [Example]
 
 blockex :: Parser Block
-blockex = BlockEx <$> examples
+blockex = BlockEx <$> examplesNoNewline
 
 --Example OrderParam Level No Name Body [Example]
+
+examplesNoNewline :: Parser [Example]
+examplesNoNewline = (subordinatesNoNewline 0) -- <* lookAhead parend
 
 examples :: Parser [Example]
 examples = subordinates 0 -- <* lookAhead parend
 
 --a parser that parses a sequence of examples of level l, where the last example can
 --optionally have a bunch of sub-examples.
+
+subordinatesNoNewline :: Level -> Parser [Example]
+subordinatesNoNewline _ = do
+  expsNoNewline <- many $ try mrkPlusBodyNoNewline
+  exps <- some $ try mrkPlusBody
+  lookAhead parend
+  return $ embedall (expsNoNewline ++ exps)
 
 subordinates :: Level -> Parser [Example]
 subordinates _ = do
@@ -154,6 +171,13 @@ defex = Example Unordered 0 zeros "noname" (ExBody []) [] :: Example
 
 
 --example parts
+
+mrkPlusBodyNoNewline :: Parser Example
+mrkPlusBodyNoNewline = ( do
+  mark <- markerNoNewline
+  prts <- (many $ try paraPart) -- exampleParaParts
+  return $ updateExampleUsing (ExBody prts) mark )
+
 
 mrkPlusBody :: Parser Example
 mrkPlusBody = ( do
