@@ -94,20 +94,15 @@ flip0To n (int : ints)
   | otherwise = int : flip0To n ints
 
 
-exso1'' = "(@1) first item.\n(@2) second item.^[footnote.]\n(@3) third item.\n  a. fourth item."
-pexso1'' = runParserT examplesNoNewline "" exso1''
-
-psubmrk1' = runParserT submrk "" "\n  (@blah) "
-psubmrk3' = runParserT submrk "" "  5) "
-
-
 --BlockEx [Example]
 
 blockex :: Parser Block
 blockex = BlockEx <$> examplesNoNewline
+{- Note: examplesNoNewline is a parser that does not require
+   a newline before the example-marker. It is meant to replace
+   the examples parser -}
 
 --Example OrderParam Level No Name Body [Example]
-
 examplesNoNewline :: Parser [Example]
 examplesNoNewline = (subordinatesNoNewline 0) -- <* lookAhead parend
 
@@ -119,8 +114,8 @@ examples = subordinates 0 -- <* lookAhead parend
 
 subordinatesNoNewline :: Level -> Parser [Example]
 subordinatesNoNewline _ = do
-  expsNoNewline <- many $ try mrkPlusBodyNoNewline
-  exps <- some $ try mrkPlusBody
+  expsNoNewline <- (:[]) <$> try mrkPlusBodyNoNewline
+  exps <- (some $ try mrkPlusBody) <|> return []
   lookAhead parend
   return $ embedall (expsNoNewline ++ exps)
 

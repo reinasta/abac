@@ -108,6 +108,30 @@ spec = do
     it "Check whether ordered examples are embedded correctly" $ do
       test_peex1 >>= (`shouldBe` True)
 
+    it "First ordered example without preceding new line" $ do
+      parseRes <- fmap (all (== True) . fmap isOrdered) <$> pex1
+      parseRes `shouldBe` Right True
+
+    it "Second ordered example without preceding new line" $ do
+      parseRes <- fmap (all (== True) . fmap isOrdered) <$> pex2
+      parseRes `shouldBe` Right True
+
+
+    it "Third ordered example without preceding new line" $ do
+      parseRes <- fmap (all (== True) . fmap isOrdered) <$> pex3
+      parseRes `shouldBe` Right True
+
+
+    it "Fourth ordered example without preceding new line" $ do
+      parseRes <- fmap (all (== True) . fmap isOrdered) <$> pex4
+      parseRes `shouldBe` Right True
+
+
+    it "Fifth ordered example without preceding new line" $ do
+      parseRes <- fmap (all (== True) . fmap isOrdered) <$> pex5
+      parseRes `shouldBe` Right True
+
+
 
   describe "Bullet item parser:" $ do
 
@@ -180,11 +204,11 @@ ex3 = "(1) This is a sentence. This is also a sentence. What about a question at
 ex4 = "(1) This is a sentence.\n This is also a sentence.\n What about a question at this point? \n  a. Hahaha. One sentence.\n Then another.\n Finally, the last\n sentence."
 ex5 = "(@1) This is a sentence. This is also a sentence. What about a question at this point? \n  a. Hahaha. One sentence. Then another. Finally, the last sentence.\n  b. A subexample formed from one single sentence."
 
-pex1 = runParserT examples "" ex1
-pex2 = runParserT examples "" ex2
-pex3 = runParserT examples "" ex3
-pex4 = runParserT examples "" ex4
-pex5 = runParserT examples "" ex5
+pex1 = runParserT examplesNoNewline "" ex1
+pex2 = runParserT examplesNoNewline "" ex2
+pex3 = runParserT examplesNoNewline "" ex3
+pex4 = runParserT examplesNoNewline "" ex4
+pex5 = runParserT examplesNoNewline "" ex5
 
 
 
