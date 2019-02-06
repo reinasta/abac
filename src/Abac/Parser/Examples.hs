@@ -5,7 +5,6 @@ import Prelude hiding (Word,pred)
 
 import Control.Applicative hiding ((<|>),many,some)
 import Text.Megaparsec hiding (State)
-import Text.Megaparsec.Debug (dbg)
 
 import Abac.Types.ParserTypes
 import Abac.Internal (isOrdered,listToTup,tupToList)
@@ -114,7 +113,7 @@ examples = subordinates 0 -- <* lookAhead parend
 
 subordinatesNoNewline :: Level -> Parser [Example]
 subordinatesNoNewline _ = do
-  expsNoNewline <- (:[]) <$> try mrkPlusBodyNoNewline
+  expsNoNewline <- (:[]) <$> (try mrkPlusBodyNoNewline <|> mrkPlusBody)
   exps <- (some $ try mrkPlusBody) <|> return []
   lookAhead parend
   return $ embedall (expsNoNewline ++ exps)

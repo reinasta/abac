@@ -7,7 +7,6 @@ import Prelude hiding (Word)
 import Data.Functor (($>))
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Text.Megaparsec.Debug (dbg)
 
 import Abac.Types.ParserTypes
 import Abac.Parser.Operations
@@ -22,15 +21,15 @@ inlineMarker = fmap Other marker
 
 submrk :: Parser Marker
 submrk = do
-  try (dbg "newline" newline) <|> return undefined
-  mrk <- dbg "it/exmrk" (try itmrk <|> exmrk)
+  try newline <|> return undefined
+  mrk <- try itmrk <|> exmrk
   check mrk
   where
     check :: Marker -> Parser Marker
-    check mrk' = dbg "check" (
+    check mrk' =
       if markerLevel mrk' < 1
          then fail "level 0 marker"
-         else return mrk')
+         else return mrk'
 
 markerNoNewline :: Parser Marker
 markerNoNewline = try itmrk <|> exmrk <?> "marker without a newline-prefix"
@@ -70,7 +69,7 @@ exmrk = do
       return (zeros, T.pack nom)
 
     numkey = read <$> some (digitChar :: Parser Char) :: Parser Int
-    alphakey = fmap pure letterChar <|> many (oneOf romanDigits) -- some (letterChar :: Parser Char)
+    alphakey = fmap pure letterChar <|> some (oneOf romanDigits) -- some (letterChar :: Parser Char)
     romanDigits = "ivxl" :: String
     punctAround :: Parser a -> Parser a
     punctAround content =

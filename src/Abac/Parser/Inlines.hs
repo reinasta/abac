@@ -8,6 +8,7 @@ import Control.Applicative hiding ((<|>),many,some)
 import Data.Maybe (fromMaybe)
 import Text.Megaparsec
 import Text.Megaparsec.Char
+import Text.Megaparsec.Debug (dbg)
 import Prelude hiding (Word,id)
 
 
@@ -67,13 +68,13 @@ emptyDblQuotes =
 -- most general parser for inlines, includes all matching punctuation, e.g. parens, brackets etc.
 -- note that it depends on inlinesSans
 decoratedInlines :: Parser [Inline]
-decoratedInlines = try (eof *> return []) <|> do
+decoratedInlines = dbg "decoratedInlines" (try (eof *> return []) <|> do
   notFollowedBy $ try parend <|> sectionMarker $> Null
   inls' <- lookAhead decoratedInlinesApostr
   inls'' <- lookAhead decoratedInlinesNoApostr
   if length inls'' > length inls'
     then decoratedInlinesNoApostr
-    else decoratedInlinesApostr
+    else decoratedInlinesApostr)
 
 -- apostrophe version
 decoratedInlinesApostr :: Parser [Inline]
@@ -607,16 +608,17 @@ because then the newline (oneNl) before any marker will not be consumed.
 -}
 
 parend :: Parser Inline
-parend = ( (try newlines
+parend = (dbg "parend" (try newlines
   <|> try endInComment
-  <|> try newlinePlusMarker
+  -- <|> try newlinePlusMarker
   <|> endOfFile)
   *> return ParEnd
   <?> "parend" )
   where
     newlines = oneNl *> oneNl *> many oneNl *> return ()
     endInComment = many newline *> return () <* lookAhead (string "-->")
-    oneNl = newln <* noExMarker <* skipMany (char ' ')
+    --oneNl = newln <* noExMarker <* skipMany (char ' ')
+    oneNl = newln <* (try (skipMany (char ' ') <* noExMarker) <|> return ())
     noExMarker = notFollowedBy $ many (char ' ') *> marker
     nlBeforeMarker = newln <* lookAhead marker
     newlinePlusMarker = many (try oneNl) *> nlBeforeMarker *> return ()

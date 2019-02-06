@@ -172,7 +172,7 @@ paraPart = paraPartWith afterEnd
   where
     afterEnd = try newlnStrict
            <|> try (lookAhead parend)
-           <|> try ( (lookAhead marker *> return Null))
+           -- <|> try ( (lookAhead marker *> return Null))
            <|> return Null
 
 --an in-paragraph footnote: ParaFtn Int [Sentence]; cf. footnoteB

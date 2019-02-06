@@ -26,3 +26,5 @@ palice1' = do
   Right dcm <- runParserT doc "" (withoutAbbreviations' txt)
   putStrLn $ T.unpack $ toc dcm
 
+
+

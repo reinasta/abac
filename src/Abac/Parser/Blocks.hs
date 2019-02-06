@@ -8,6 +8,7 @@ import Data.Functor (($>))
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
+import Text.Megaparsec.Debug (dbg)
 
 import Abac.Types.ParserTypes
 import Abac.Internal (posFromSource)
@@ -41,7 +42,7 @@ blockWith end =
   <|> try imageref
   <|> try paragraph
   <|> try footnoteB
-  <|> try blockex
+  <|> try (dbg "blockex" blockex)
   <|> try blockquote
   <|> try blocktech
   <|> blockComment)
@@ -207,4 +208,5 @@ tableCaption :: Parser Caption -- Caption [ParaPart]
 tableCaption = Caption <$> (captionCheck *> many someParaPart <* parend)
   where
     captionCheck = lookAhead $ string "Table" >> char ':'
+
 
