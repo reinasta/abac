@@ -33,9 +33,11 @@ submrk = do
 
 markerNoNewline :: Parser Marker
 markerNoNewline = try itmrk <|> exmrk <?> "marker without a newline-prefix"
+-- this replaces 'marker'
 
 marker :: Parser Marker
 marker = newline *> (try itmrk <|> exmrk <?> "marker")
+-- dispensable in the future; it's still a dependency in a few places
 
 exmrk :: Parser Marker
 exmrk = do

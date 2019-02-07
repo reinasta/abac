@@ -8,7 +8,7 @@ import Control.Applicative hiding ((<|>),many,some)
 import Data.Maybe (fromMaybe)
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Text.Megaparsec.Debug (dbg)
+--import Text.Megaparsec.Debug (dbg)
 import Prelude hiding (Word,id)
 
 
@@ -68,13 +68,13 @@ emptyDblQuotes =
 -- most general parser for inlines, includes all matching punctuation, e.g. parens, brackets etc.
 -- note that it depends on inlinesSans
 decoratedInlines :: Parser [Inline]
-decoratedInlines = dbg "decoratedInlines" (try (eof *> return []) <|> do
+decoratedInlines = try (eof *> return []) <|> do
   notFollowedBy $ try parend <|> sectionMarker $> Null
   inls' <- lookAhead decoratedInlinesApostr
   inls'' <- lookAhead decoratedInlinesNoApostr
   if length inls'' > length inls'
     then decoratedInlinesNoApostr
-    else decoratedInlinesApostr)
+    else decoratedInlinesApostr
 
 -- apostrophe version
 decoratedInlinesApostr :: Parser [Inline]
@@ -599,30 +599,22 @@ optSpace = fromMaybe Null <$> (optional insSpace)
 newln  :: Parser Inline -- Newline
 newln = newline >> return Newline <?> "newln"
 
-{- Idea: modify parend to consume just one newline when it finds a parend
-followed by an `example`. It will perhaps do to redefine `noMarker` as:
-
-       notFollwedBy $ many insSpace >> anyMarker
-
-because then the newline (oneNl) before any marker will not be consumed.
--}
 
 parend :: Parser Inline
-parend = (dbg "parend" (try newlines
+parend = (try newlines
   <|> try endInComment
   -- <|> try newlinePlusMarker
   <|> endOfFile)
   *> return ParEnd
-  <?> "parend" )
+  <?> "parend"
   where
     newlines = oneNl *> oneNl *> many oneNl *> return ()
     endInComment = many newline *> return () <* lookAhead (string "-->")
     --oneNl = newln <* noExMarker <* skipMany (char ' ')
     oneNl = newln <* (try (skipMany (char ' ') <* noExMarker) <|> return ())
     noExMarker = notFollowedBy $ many (char ' ') *> marker
-    nlBeforeMarker = newln <* lookAhead marker
-    newlinePlusMarker = many (try oneNl) *> nlBeforeMarker *> return ()
-    --newlinePlusMarker = newline *> lookAhead mrk *> return ()
+    --nlBeforeMarker = newln <* lookAhead marker
+    --newlinePlusMarker = many (try oneNl) *> nlBeforeMarker *> return ()
     endOfFile = space >> eof :: Parser ()
 
 
@@ -714,7 +706,7 @@ closeComment = lexeme $ string "-->"
 
 
 inline :: Parser Inline
-inline = (
+inline =
   choice [ insSpace
          , newlnStrict
          , num
@@ -726,7 +718,7 @@ inline = (
          , citation
          , techInline
          , inlineComment
-         ] <?> "inline" )
+         ] <?> "inline"
 
 newlnStrict :: Parser Inline
 newlnStrict = notFollowedBy someMarker *> newln <* notFollowedBy anotherNewline

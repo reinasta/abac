@@ -5,6 +5,7 @@ import Prelude hiding (Word,pred)
 
 import Control.Applicative hiding ((<|>),many,some)
 import Text.Megaparsec hiding (State)
+import Text.Megaparsec.Char (newline)
 
 import Abac.Types.ParserTypes
 import Abac.Internal (isOrdered,listToTup,tupToList)
@@ -175,7 +176,7 @@ mrkPlusBodyNoNewline = ( do
 
 mrkPlusBody :: Parser Example
 mrkPlusBody = ( do
-  mark <- marker
+  mark <- newline *> markerNoNewline
   prts <- (many $ try paraPart) -- exampleParaParts
   return $ updateExampleUsing (ExBody prts) mark )
 

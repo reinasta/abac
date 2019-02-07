@@ -115,6 +115,11 @@ spec = do
     it "A block with many newlines" $ do
      (fmap isBlock <$> pblc8) >>= (`shouldBe` Right True)
 
+    it "An example block must be separated by two newlines from the previous block" $ do
+     (fmap (== []) <$> pblc9) >>= (`shouldBe` Right True)
+     -- in other words, the blocks will not be parsed with the block-parser (result: [])
+
+
 
   describe "Footnote parsers:" $ do
 
@@ -236,13 +241,13 @@ blc55 :: String
 blc55 = "‘I’m sure I’m not Ada,’ she said, ‘for her hair goes in such long\nringlets, and mine doesn’t go in ringlets at all; and I’m sure I can’t\nbe Mabel, for I know all sorts of things, and she, oh! she knows such a\nvery little! Besides, SHE’S she, and I’m I, and--oh dear, how puzzling\nit all is! I’ll try if I know all the things I used to know. Let me\nsee: four times five is twelve, and four times six is thirteen, and\nfour times seven is--oh dear! I shall never get to twenty at that rate!\nHowever, the Multiplication Table doesn’t signify: let’s try Geography.\nLondon is the capital of Paris, and Paris is the capital of Rome, and\nRome--no, THAT’S all wrong, I’m certain! I must have been changed for\nMabel! I’ll try and say “How doth the little--”’ and she crossed her\nhands on her lap as if she were saying lessons, and began to repeat it,\nbut her voice sounded hoarse and strange, and the words did not come the\nsame as they used to do:"
 
 
-
 blc6 = "\"\"\n\n"
 blc61 = "> \"\"\n\n"
 blc611 = "> \n\n"
 blc7 = "This is a paragraph in a certain section (number 1 3 1 1).\n\n"
 blc8 = "This\n is\n a\n paragraph in a certain section\n (number 1 3 1 1).\n\n\n"
 
+blc9 = "A sentence. \n(1) Followed by an example. \n   a. with a nested item." :: String
 
 
 pblc1 = runParserT block "" blc1
@@ -267,6 +272,7 @@ pblc611 = runParserT block "" blc611
 pblc7 = runParserT block "" blc7
 pblc8 = runParserT block "" blc8
 
+pblc9 = runParserT (many block) "" blc9
 
 -- test for newlinePlusMarker: three newlines plus marker (i.e. newline followed by e.g. " (@1) ")
 newlinePlusMarker_txt1 = "Blah.\n\n\n  (@ex1) Just this.\n\n"
