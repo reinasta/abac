@@ -17,7 +17,7 @@ import Abac.Parser.Operations
 --parse markers
 
 inlineMarker :: Parser Inline
-inlineMarker = fmap Other marker
+inlineMarker = fmap Other markerNoNewline
 
 submrk :: Parser Marker
 submrk = do
