@@ -17,7 +17,7 @@ import Abac.Parser.Operations
 --parse markers
 
 inlineMarker :: Parser Inline
-inlineMarker = fmap Other markerNoNewline
+inlineMarker = fmap Other marker
 
 submrk :: Parser Marker
 submrk = do
@@ -31,13 +31,8 @@ submrk = do
          then fail "level 0 marker"
          else return mrk'
 
-markerNoNewline :: Parser Marker
-markerNoNewline = try itmrk <|> exmrk <?> "marker without a newline-prefix"
--- this replaces 'marker'
-
 marker :: Parser Marker
-marker = newline *> (try itmrk <|> exmrk <?> "marker")
--- dispensable in the future; it's still a dependency in a few places
+marker = try itmrk <|> exmrk <?> "marker without a newline-prefix"
 
 exmrk :: Parser Marker
 exmrk = do

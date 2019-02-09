@@ -11,6 +11,7 @@ import qualified Data.Text as T
 import Data.Maybe (fromJust,fromMaybe)
 import qualified Data.Map.Strict as M
 import Text.Megaparsec
+import Text.Megaparsec.Char (newline)
 import Test.Hspec.Megaparsec
 import Data.Void (Void)
 import Prelude hiding (Word)
@@ -58,7 +59,7 @@ spec = do
       parseRes <- fmap (all (== True) . fmap isOrdered) <$> pexso4
       parseRes `shouldBe` Right True
 
-    it "This is the marker of an (ordered) example item" $ do
+    it "This is the marker of an (ordered) example item preceded by a newline" $ do
       parseRes <- pexso1_mrk :: IO (Either (ParseErrorBundle String Void) Marker)
       parseRes `shouldBe` Right (ExMark 0 zeros "2")
 
@@ -246,7 +247,7 @@ exso18 = "\n 1."
 
 
 pexso1 = runParserT examples "" exso1
-pexso1_mrk = runParserT marker "" exso1
+pexso1_mrk = runParserT (newline *> marker) "" exso1
 
 pexso2 = runParserT examples "" exso2
 pexso3 = runParserT examples "" exso3

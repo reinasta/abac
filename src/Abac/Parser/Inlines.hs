@@ -612,7 +612,7 @@ parend = (try newlines
     endInComment = many newline *> return () <* lookAhead (string "-->")
     --oneNl = newln <* noExMarker <* skipMany (char ' ')
     oneNl = newln <* (try (skipMany (char ' ') <* noExMarker) <|> return ())
-    noExMarker = notFollowedBy $ many (char ' ') *> newline *> markerNoNewline
+    noExMarker = notFollowedBy $ many (char ' ') *> newline *> marker
     --nlBeforeMarker = newln <* lookAhead marker
     --newlinePlusMarker = many (try oneNl) *> nlBeforeMarker *> return ()
     endOfFile = space >> eof :: Parser ()
@@ -656,7 +656,7 @@ noMarker = notFollowedBy endOfExample
 
 endOfExample :: Parser ()
 endOfExample =
-  choice [ newline *> markerNoNewline $> ()
+  choice [ newline *> marker $> ()
          , newline $> ()
          , eof
          ] <?> "endOfExample"
@@ -724,7 +724,7 @@ newlnStrict :: Parser Inline
 newlnStrict = notFollowedBy someMarker *> newln <* notFollowedBy anotherNewline
   where
     anotherNewline = try (lexeme newline) $> ()
-    someMarker = try (lexeme $ newline *> markerNoNewline) $> ()
+    someMarker = try (lexeme $ newline *> marker) $> ()
 
 num :: Parser Number
 num = do
@@ -950,5 +950,5 @@ sentenceWith endOfSentencePunct =(fmap Sentence $
   <?> "sentence"
   where
     afterPunct = try justOneNewline <|> return []
-    justOneNewline = notFollowedBy (newline *> markerNoNewline) *> many newlnStrict
+    justOneNewline = notFollowedBy (newline *> marker) *> many newlnStrict
 

@@ -169,14 +169,14 @@ defex = Example Unordered 0 zeros "noname" (ExBody []) [] :: Example
 
 mrkPlusBodyNoNewline :: Parser Example
 mrkPlusBodyNoNewline = ( do
-  mark <- markerNoNewline
+  mark <- marker
   prts <- (many $ try paraPart) -- exampleParaParts
   return $ updateExampleUsing (ExBody prts) mark )
 
 
 mrkPlusBody :: Parser Example
 mrkPlusBody = ( do
-  mark <- newline *> markerNoNewline
+  mark <- newline *> marker
   prts <- (many $ try paraPart) -- exampleParaParts
   return $ updateExampleUsing (ExBody prts) mark )
 
