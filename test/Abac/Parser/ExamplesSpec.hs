@@ -205,11 +205,11 @@ ex3 = "(1) This is a sentence. This is also a sentence. What about a question at
 ex4 = "(1) This is a sentence.\n This is also a sentence.\n What about a question at this point? \n  a. Hahaha. One sentence.\n Then another.\n Finally, the last\n sentence."
 ex5 = "(@1) This is a sentence. This is also a sentence. What about a question at this point? \n  a. Hahaha. One sentence. Then another. Finally, the last sentence.\n  b. A subexample formed from one single sentence."
 
-pex1 = runParserT examplesNoNewline "" ex1
-pex2 = runParserT examplesNoNewline "" ex2
-pex3 = runParserT examplesNoNewline "" ex3
-pex4 = runParserT examplesNoNewline "" ex4
-pex5 = runParserT examplesNoNewline "" ex5
+pex1 = runParserT examples "" ex1
+pex2 = runParserT examples "" ex2
+pex3 = runParserT examples "" ex3
+pex4 = runParserT examples "" ex4
+pex5 = runParserT examples "" ex5
 
 
 

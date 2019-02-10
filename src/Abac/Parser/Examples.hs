@@ -97,33 +97,22 @@ flip0To n (int : ints)
 --BlockEx [Example]
 
 blockex :: Parser Block
-blockex = BlockEx <$> examplesNoNewline
-{- Note: examplesNoNewline is a parser that does not require
-   a newline before the example-marker. It is meant to replace
-   the examples parser -}
+blockex = BlockEx <$> examples
 
 --Example OrderParam Level No Name Body [Example]
-examplesNoNewline :: Parser [Example]
-examplesNoNewline = (subordinatesNoNewline 0) -- <* lookAhead parend
-
 examples :: Parser [Example]
-examples = subordinates 0 -- <* lookAhead parend
+examples = (subordinates 0) -- <* lookAhead parend
 
 --a parser that parses a sequence of examples of level l, where the last example can
 --optionally have a bunch of sub-examples.
 
-subordinatesNoNewline :: Level -> Parser [Example]
-subordinatesNoNewline _ = do
-  expsNoNewline <- (:[]) <$> (try mrkPlusBodyNoNewline <|> mrkPlusBody)
-  exps <- (some $ try mrkPlusBody) <|> return []
-  lookAhead parend
-  return $ embedall (expsNoNewline ++ exps)
-
 subordinates :: Level -> Parser [Example]
 subordinates _ = do
-  exps <- some $ try mrkPlusBody
+  let nlnMrkPlusBody = newline *> mrkPlusBody
+  exps_1 <- (:[]) <$> (try nlnMrkPlusBody <|> mrkPlusBody)
+  exps_2 <- (some $ try nlnMrkPlusBody) <|> return []
   lookAhead parend
-  return $ embedall exps
+  return $ embedall (exps_1 ++ exps_2)
 
 --handing embedding of subexamples in their superexamples
 
@@ -167,18 +156,12 @@ defex = Example Unordered 0 zeros "noname" (ExBody []) [] :: Example
 
 --example parts
 
-mrkPlusBodyNoNewline :: Parser Example
-mrkPlusBodyNoNewline = ( do
+mrkPlusBody :: Parser Example
+mrkPlusBody = ( do
   mark <- marker
   prts <- (many $ try paraPart) -- exampleParaParts
   return $ updateExampleUsing (ExBody prts) mark )
 
-
-mrkPlusBody :: Parser Example
-mrkPlusBody = ( do
-  mark <- newline *> marker
-  prts <- (many $ try paraPart) -- exampleParaParts
-  return $ updateExampleUsing (ExBody prts) mark )
 
 exampleParaParts :: Parser [ParaPart]
 exampleParaParts = someParaPart `manyTill` lookAhead (try inlineMarker <|> parend)
@@ -191,7 +174,7 @@ inheritParamsFrom (Example _ _ _ _ body subs) (ExMark lev no nom) =
   Example Ordered lev no nom body subs
 inheritParamsFrom (Example _ _ _ _ body subs) (ItMark lev no nom) =
   Example Unordered lev no nom body subs
-inheritParamsFrom ex _ = ex 
+inheritParamsFrom ex _ = ex
 
 mrkLevelUp :: Marker -> Parser Marker
 mrkLevelUp amrk = let lev = markerLevel amrk in checkMarkerWith (< lev)
