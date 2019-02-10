@@ -40,7 +40,7 @@ parts of markdown documents.
 Second, Abac adopts natural language processing (NLP) functionality like part
 of speech (POS) tagging to improve on its word search, so that we can 
 better distinguish between (and search for) words on grammatical grounds,
-rather than just based on string characters comparisons. We can thus search
+rather than just based on string comparisons. We can thus search
 for (and count and calculate percentages of) the prepositions, passive verbs,
 connectives, determiners, abstract nouns etc. in the text divisions of a
 markdown document.
@@ -86,7 +86,7 @@ In all the higher forms this process cannot be kept up indefinitely. After a whi
 
 Finish with Ctrl-D to save the file and to bring the terminal prompt back.
 
-Download the abac executable (called simply `abac`) in the same folder as `text.txt`.
+Download the [abac executable](https://github.com/reinasta/abac/releases) (called simply `abac`) in the same folder as `text.txt`.
 
 ## Listing and counting words
 
@@ -315,8 +315,8 @@ typographical and grammatical features.
 
 Abac's markdown syntax comes with a number of quirks:
 
-- an example (or bullet point) block should be preceded by at least a newline,
-and by two newlines if the example block occurs after another block (e.g. paragraph)
+- an example (or bullet point) block should be preceded by a blank line (two newlines) 
+if the example block occurs after another block (e.g. paragraph)
 - definition lists are not yet supported
 - there is just one way to add emphasis to text, namely using asterisks:
   + italic text is marked up \*like this\*, and
@@ -327,11 +327,6 @@ beginning of the document; and there is no other special way of marking up meta 
 bullet points, and that limit is 6. So you can have a section like 1.2.3.4.5.6, but
 this section cannot embed any additional subsection (like 1.2.3.4.5.6.1). Likewise
 for bullet points and numbered examples.
-- footnotes may appear only at the end of a sentence, after the end-of-sentence
-punctuation, or at the end of a group of inlines that is not part of a sentence [fixed]
-- footnotes should not contain square brackets, '[' and ']' [fixed]
-- small footnotes (within paragraphs) should contain full sentences, which end
-with adequate punctuation (one or more of '.?!') [fixed]
 - backticks are reserved for code blocks and cannot be used as openning single quotes
 - colon must be followed by a white space character unless it appears in references
 (of the form @author:year)

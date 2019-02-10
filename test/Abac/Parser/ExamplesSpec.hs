@@ -98,6 +98,10 @@ spec = do
     it "Two sets of ordered examples" $ do
       (fmap . fmap) length pexso15 >>= (`shouldBe` Right (2 :: Int))
 
+    it "An list item cannot follow a newline that ends a paragraph" $ do
+      res <- pexso19
+      (\_ -> res) `shouldFailOn` exso19
+
     it "Ordered examples with footnotes" $ do
       parseRes <- fmap (all (== True) . fmap isOrdered) <$> pexso
       parseRes `shouldBe` Right True
@@ -212,7 +216,8 @@ pex4 = runParserT examples "" ex4
 pex5 = runParserT examples "" ex5
 
 
-
+-- a list item which is not preceded by another list item can still be prefixed with a newline
+-- but not if the newline ends another block (e.g. paragraph); see `exso19` and `pexso19`
 exso1 = "\n(@2) first item\nsecond item\nthird item\nfourth item and end of sentence.\n(@3) Blah."
 exso2 = "\n(@3) first item, second item, third item, fourth item and end of sentence.\n(@4) Blah."
 exso3 = "\n(@1) Quick sentence.\nfirst item, second item, third item, fourth item and end of sentence.\n(@2) Blah."
@@ -234,16 +239,19 @@ exso10 = "\n(@1) Quick sentence.^[This is a footnote. It spans two sentences.]\n
 exso11 = "\n(@1) Quick sentence.^[This is a footnote. It spans two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  a. A subordinated item.\n(@2) Blah."
 exso12 = "\n(@1) Quick sentence.^[This is a footnote. It spans two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A subordinated item.\n  - Subordinated item number two.\n(@2) Blah."
 
-exso13 = "\n(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!"
+exso13 = "(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!"
 
 
-exso14 = "\n(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!\n  + blah,\nblah\nblah.\n\n"
+exso14 = "(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!\n  + blah,\nblah\nblah.\n\n"
 
-exso15 = "\n(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!\n  + blah,\nblah\nblah.\n\n(@3) Another hanging example.\n\n  a. With a short sub-example. Really short!\n\n"
+exso15 = "(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!\n  + blah,\nblah\nblah.\n\n(@3) Another hanging example.\n\n  a. With a short sub-example. Really short!\n\n"
 
 exso16 = "\n@ "
 exso17 = "\n+"
 exso18 = "\n 1."
+
+-- this will fail to parse: a paragraph followed by a newline followed by a list item
+exso19 = "A short paragraph.\n(@1) Quick sentence.^[This is\n a footnote.\nIt spans\n two sentences.]\nThis sentence.\n^[Finally a footnote!]\n  - A\nsubordinated\nitem.\n  - Subordinated\nitem number\ntwo.\n(@2) Blah.\n  + a list of items: car, disc, banana\n  + another list: book, computer, blah;\n  c. First sentence! Second sentence. Third sentence, at last!"
 
 
 pexso1 = runParserT examples "" exso1
@@ -273,6 +281,8 @@ pexso15 = runParserT examples "" exso15
 pexso16 = runParserT (many examples) "" exso16
 pexso17 = runParserT (many examples) "" exso17
 pexso18 = runParserT (many examples) "" exso18
+pexso19 = runParserT doc "" exso19
+
 
 
 exso = "\n(@1) first item.\n(@2) second item.^[footnote.]\n(@3) third item.\n  a. fourth item."
