@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Abac.Traverse.Internal where
+module Abac.Traverse.InternalInternal where
 
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T (Text, splitOn, length, isSuffixOf,

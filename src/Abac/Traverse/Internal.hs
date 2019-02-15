@@ -117,7 +117,7 @@ class Searchable a where
   -- | collects the sections in a given element
 
   getPosition            :: a -> (Position,Position)
-  -- | this takes an element @el@ and returns the position of the first and last inline of @el@
+  -- | this takes an element @el@ and returns the positions of the first and last inline of @el@
   -- in a tuple
 
   gatherExamples :: a -> [Example]
@@ -127,7 +127,6 @@ class Searchable a where
         unwrapExBlcs _ = []
     in  concatMap unwrapExBlcs exblcs
   -- | collects the example items in a given element
-
 
 
   -- Produce word list and count
@@ -2615,6 +2614,7 @@ getIntro doc =
   in  note msg $ case (filter isPureDiv $ getSections doc) of
                    []     -> Nothing
                    secs -> Just (head secs)
+
 
 
 

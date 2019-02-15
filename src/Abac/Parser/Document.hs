@@ -8,7 +8,7 @@ import Abac.Types.ParserTypes
 import Abac.Parser.Operations
 import Abac.Parser.Sections
 import Abac.Parser.Inlines (parend)
-import Abac.Traverse.Internal (getAllSections,toc)
+import Abac.Traverse.Internal -- (getAllSections,toc)
 
 -- document parser
 doc :: Parser Document
@@ -17,4 +17,3 @@ doc = do
   divs <- divisions
   eof
   return $ Doc divs
-

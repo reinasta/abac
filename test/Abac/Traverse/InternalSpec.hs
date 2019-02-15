@@ -9,11 +9,85 @@ import Abac.Parser.Internal (withoutAbbreviations')
 import Abac.Internal (mkWords)
 import Abac.Types
 import Abac.Traverse
+import Abac.Traverse.InternalInternal ((%>))
 
 spec :: Spec
-spec = describe "Prelude.head" $ do
-  it "returns the first element of a list" $ do
-    head [1,2,3] `shouldBe` (1 :: Int)
+spec = describe "Traverse.Internal module" $ do
+
+  it "A sentence of five words" $ do
+    Right el <- ptwords1
+    countWordsIn (el :: Document) `shouldBe` (5 :: Int)
+
+  it "One string of six tiny words.\n\n " $ do
+    Right el <- ptwords2
+    countWordsIn (el :: Document) `shouldBe` (6 :: Int)
+
+  it "Get the position of the second word" $ do
+    Right el <- ptwords1
+    let sent = head (gatherParaParts el)
+    let wrds = gatherInlines sent
+    let correctPosition = ((1,2),(1,2)) :: (Position, Position)
+    getPosition (wrds !! 2) `shouldBe` correctPosition
+    -- note: second inline is a Space; the third is a Word (at index 2)
+
+  it "Inlines that are not word-like (e.g. Spaces) are assigned a meaningless, default position" $ do
+    Right el <- ptwords1
+    let sent = head (gatherParaParts el)
+    let wrds = gatherInlines sent
+    let correctPosition = ((0,0),(0,0)) :: (Position, Position)
+    getPosition (wrds !! 1) `shouldBe` correctPosition
+    -- note: second inline (at index 1) is a Space
+
+  it "Get the position of a sentence" $ do
+    Right el <- ptwords1
+    let sent = head (gatherParaParts el)
+    let correctPosition = ((1,0),(1,24)) :: (Position, Position)
+    getPosition sent `shouldBe` correctPosition
+    -- the end position (24) is read off the last word-like inline.
+
+  it "Get the position of another sentence" $ do
+    Right el <- ptwords2
+    let sent = head (gatherParaParts el)
+    let correctPosition = ((1,0),(1,27)) :: (Position, Position)
+    getPosition sent `shouldBe` correctPosition
+    -- the end position (27) is read off the last word-like inline.
+
+  it "A five-word sentence generates two 4-grams" $ do
+    Right el <- ptwords1
+    length (ngramsIn 4 el) `shouldBe` (2 :: Int)
+
+  it "A six-word sentence generates five 2-grams" $ do
+    Right el <- ptwords2
+    length (ngramsIn 2 el) `shouldBe` (5 :: Int)
+
+  it "One occurrence of the word <six>" $ do
+    Right el <- ptwords2
+    let expressions = ([Expression [Word [None] (0,0) "six"]] :: [Expression])
+    countExpressions expressions el `shouldBe` (1 :: Int)
+
+  it "One occurrence of the expression <five words>" $ do
+    Right el <- ptwords1
+    let expressions =
+          ([Expression [Word [None] (0,0) "five", Word [None] (0,0) "words"]])
+    countExpressions expressions el `shouldBe` (1 :: Int)
+
+  it "Proportion of expressions equal to <sentence of> or <five words> in the total number of expressions that can be generated from a sentence" $ do
+    Right el <- ptwords1
+    let expression1 = Expression [Word [None] (0,0) "sentence", Word [None] (0,0) "of"]
+    let expression2 = Expression [Word [None] (0,0) "five", Word [None] (0,0) "words"]
+    let expressions = [expression1, expression2]
+    proportionExpressions expressions el `shouldBe` (2 %> 4 :: Double)
+
+  it "Total number of inlines in a document" $ do
+    Right el <- ptwords2
+    length (gatherInlines el) `shouldBe` (13 :: Int)
+
+
+twords1 = "A sentence of five words. "
+twords2 = "One string of six tiny words.\n\n "
+
+ptwords1 = runParserT P.doc "" twords1
+ptwords2 = runParserT P.doc "" twords2
 
 --test
 adwords_tagged1 :: [Inline]

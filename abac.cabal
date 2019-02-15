@@ -65,6 +65,7 @@ library
                      , Abac.PrettyResults
                      , Abac.Traverse
                      , Abac.Traverse.Internal
+                     , Abac.Traverse.InternalInternal
                      , Abac.Traverse.Predicates
                      , Abac.Tutorials
                      , Abac.Tutorials.Make

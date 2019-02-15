@@ -40,4 +40,3 @@ Abac.Types.Result
 
 -- Results
 
-
