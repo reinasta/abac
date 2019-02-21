@@ -117,19 +117,6 @@ dblquoted :: (Searchable a) => a -> Abac (Res)
 dblquoted = fromFilter (`hasAttrs` [DoubleQuoted])
 
 
-
--- possible bug: abac-exe -f style_test.md --italic --paren -p 1
-multiflag1 :: [Char]
-multiflag1 = "**Sed ut perspiciatis *unde* omnis iste natus error sit** voluptatem\naccusantium doloremque laudantium, totam (rem *aperiam*), \n[eaque ipsa quae ab illo **inventore veritatis** et quasi architecto \nbeatae vitae dicta sunt explicabo]."
-
--- removed wrapping in ListResult and Inlines
-multiflag1_parse = [Word [Bold] (1,2) "sed",Word [Bold] (1,6) "ut",Word [Bold] (1,9) "perspiciatis",Word [Bold,Emph] (1,23) "unde",Word [Bold] (1,29) "omnis",Word [Bold] (1,35) "iste",Word [Bold] (1,40) "natus",Word [Bold] (1,46) "error",Word [Bold] (1,52) "sit",Word [None] (1,58) "voluptatem",Word [None] (2,0) "accusantium",Word [None] (2,12) "doloremque",Word [None] (2,23) "laudantium",Word [None] (2,35) "totam",Word [Parenthetical] (2,42) "rem",Word [Parenthetical,Emph] (2,47) "aperiam",Word [Bracketed] (3,1) "eaque",Word [Bracketed] (3,7) "ipsa",Word [Bracketed] (3,12) "quae",Word [Bracketed] (3,17) "ab",Word [Bracketed] (3,20) "illo",Word [Bracketed,Bold] (3,27) "inventore",Word [Bracketed,Bold] (3,37) "veritatis",Word [Bracketed] (3,49) "et",Word [Bracketed] (3,52) "quasi",Word [Bracketed] (3,58) "architecto",Word [Bracketed] (4,0) "beatae",Word [Bracketed] (4,7) "vitae",Word [Bracketed] (4,13) "dicta",Word [Bracketed] (4,19) "sunt",Word [Bracketed] (4,24) "explicabo"]
-
-multiflag1_test1 = filter (`hasAttrs` [Emph,Parenthetical]) multiflag1_parse
-multiflag1_test2 = filter (`hasAttrs` [Emph,Bold]) multiflag1_parse
-
-
-
 -- accessor functions
 
 list :: Res -> Abac ListResult
